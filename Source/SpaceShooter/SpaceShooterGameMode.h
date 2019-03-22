@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameWidget.h"
 #include "GameFramework/GameMode.h"
 #include "SpaceShooterGameMode.generated.h"
 
@@ -14,9 +15,23 @@ class SPACESHOOTER_API ASpaceShooterGameMode : public AGameMode
 {
 	GENERATED_BODY()
 
+
+protected:
+	int score = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UMG Game")
+		TSubclassOf<UUserWidget> StartingWidgetClass;
+
+	UPROPERTY()
+		UUserWidget* CurrentWidget;
+
+public:
+	void IncrementScore();
+	void OnGameOver();
+
 	// Minimum interval between enemies spawning
 	const float MINIMUM_INTERVAL = 0.5f;
-	
+
 	// Maximum interval between enemies spawning
 	const float MAXIMUM_INTERVAL = 2.0f;
 
@@ -36,6 +51,6 @@ class SPACESHOOTER_API ASpaceShooterGameMode : public AGameMode
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
-protected:
-	int score = 0;
+	UFUNCTION(BlueprintCallable, Category = "UMG Game")
+		void ChangeMenuWidget(TSubclassOf<UUserWidget> NewWidgetClass);
 };

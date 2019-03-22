@@ -2,11 +2,15 @@
 
 #include "SpaceShooterGameMode.h"
 #include "EnemyController.h"
+#include "GameWidget.h"
 #include "Engine/World.h"
 
 void ASpaceShooterGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+
+	ChangeMenuWidget(StartingWidgetClass);
+	((UGameWidget*)CurrentWidget)->Load();
 }
 
 void ASpaceShooterGameMode::Tick(float DeltaTime)
@@ -43,6 +47,38 @@ void ASpaceShooterGameMode::Tick(float DeltaTime)
 
 			// Spawn the enemy
 			world->SpawnActor<AEnemyController>(EnemyBlueprint, location, FRotator::ZeroRotator); // Need #include "Engine/World.h" to compile
+		}
+	}
+}
+
+void ASpaceShooterGameMode::IncrementScore()
+{
+	score += 100;
+	((UGameWidget*)CurrentWidget)->SetScore(score);
+}
+
+void ASpaceShooterGameMode::OnGameOver()
+{
+	((UGameWidget*)CurrentWidget)->OnGameOver(score);
+}
+
+void ASpaceShooterGameMode::ChangeMenuWidget(TSubclassOf<UUserWidget> NewWidgetClass)
+{
+	if (CurrentWidget != nullptr)
+	{
+		// Remove the current widget
+		CurrentWidget->RemoveFromViewport();
+		CurrentWidget = nullptr;
+	}
+
+	if (NewWidgetClass != nullptr)
+	{
+		// Set the new widget
+		CurrentWidget = CreateWidget<UUserWidget>(GetWorld(), NewWidgetClass);
+
+		if (CurrentWidget != nullptr)
+		{
+			CurrentWidget->AddToViewport();
 		}
 	}
 }

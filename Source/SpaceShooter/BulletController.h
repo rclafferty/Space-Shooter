@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "SpaceShooterGameMode.h"
 #include "GameFramework/Actor.h"
 #include "BulletController.generated.h"
 
@@ -10,16 +11,14 @@ UCLASS()
 class SPACESHOOTER_API ABulletController : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	ABulletController();
 
-protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

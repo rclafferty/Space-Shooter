@@ -3,6 +3,7 @@
 #include "ShipController.h"
 #include "BulletController.h"
 #include "EnemyController.h"
+#include "SpaceShooterGameMode.h"
 #include "Engine/World.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -62,6 +63,9 @@ void AShipController::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 	// Make the player shoot
 	InputComponent->BindAction("Shoot", IE_Pressed, this, &AShipController::OnShoot);
+
+	// Make the game restart-able, even when paused
+	InputComponent->BindAction("Restart", IE_Pressed, this, &AShipController::OnRestart).bExecuteWhenPaused = true;
 }
 
 void AShipController::Move_XAxis(float axisValue)
@@ -99,10 +103,22 @@ void AShipController::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor
 		// Set the died flag to true
 		died = true;
 
+		// Show game is over in UI
+		((ASpaceShooterGameMode*)GetWorld()->GetAuthGameMode())->OnGameOver();
+
 		// Hide the ship
 		this->SetActorHiddenInGame(true);
 
 		// Pause the game
 		UGameplayStatics::SetGamePaused(GetWorld(), true);
+	}
+}
+
+void AShipController::OnRestart()
+{
+	if (died)
+	{
+		// Reopen current level
+		UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
 	}
 }

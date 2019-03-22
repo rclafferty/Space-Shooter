@@ -2,6 +2,7 @@
 
 #include "BulletController.h"
 #include "EnemyController.h"
+#include "SpaceShooterGameMode.h"
 #include "Components/BoxComponent.h"
 
 
@@ -57,6 +58,9 @@ void ABulletController::OnOverlap(UPrimitiveComponent* OverlappedComponent, AAct
 	{
 		// Destroy the enemy
 		OtherActor->Destroy();
+
+		// Increment the score
+		((ASpaceShooterGameMode*)GetWorld()->GetAuthGameMode())->IncrementScore();
 
 		// Destroy the bullet
 		this->Destroy();

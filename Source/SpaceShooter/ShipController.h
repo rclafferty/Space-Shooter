@@ -41,6 +41,7 @@ public:
 	void Move_YAxis(float axisValue);
 
 	void OnShoot();
+	void OnRestart();
 	
 	FVector currentVelocity;
 
